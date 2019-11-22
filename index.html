@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script src="https://kit.fontawesome.com/27eb72c98e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./main.css" type="text/css">
+
+    <title>Pomodoro Clock</title>
+</head>
+<body>
+    <h1>Pomodoro Clock</h1>
+    <section id="settings-box" class="blackbox-background">
+        <div class="row">
+            <h3>Session</h3>
+            <h3>Break</h3>
+        </div>
+        <div id="set-times" class="row row-distance">
+            <div id="dec-session">
+                <i class="fas fa-chevron-down time-btn"></i>
+            </div>
+            <div id="session-time" name="session" data-time="25">25</div>
+            <div id="inc-session">
+                <i class="fas fa-chevron-up time-btn"></i>
+            </div>
+            <div id="dec-break">
+                <i class="fas fa-chevron-down time-btn"></i>
+            </div>
+            <div id="break-time" data-time="5">5</div>
+            <div id="inc-break">
+                <i class="fas fa-chevron-up time-btn"></i>
+            </div>
+        </div>
+    </section>
+    <section id="counter-box" class="blackbox-background">
+        <div class="row">
+            <div id="play-btn">
+                <i class="fas fa-play fa-2x"></i>
+            </div>
+            <div id="reset-btn">
+                <i class="fas fa-sync-alt  fa-2x"></i>
+            </div>
+        </div>
+        <h3 class="row row-distance">Session</h3>
+        <div id="counter" class="row">25:00</div>
+        <div class="row row-distance">
+                <div id="pause-btn">
+                    <i class="fas fa-pause fa-2x"></i>
+                </div>
+                <div id="stop-btn">
+                    <i class="fas fa-stop fa-2x"></i>
+                </div>
+            </div>
+    </section>
+    <script src="./main.js"></script>
+</body>
+</html>
