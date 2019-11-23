@@ -16,7 +16,7 @@ const time = {
 let countdown;
 let counting = false;
 let activeSession = 'session';
-let timeLeft = time.sessionTime * 60;
+let secondsLeft = time.sessionTime * 60;
 
 function init() {
     time.sessionTime = 25;
@@ -37,8 +37,6 @@ function updateTimeSetting() {
 }
 
 function updateTimeSettingsDisplay() {
-    // const timeElement = document.getElementById(`${session}-time`);
-    // timeElement.innerText = time[`${session}Time`];
 
     sessionTime.textContent = time.sessionTime;
     breakTime.textContent = time.breakTime;
@@ -49,23 +47,38 @@ function updateTimeSettingsDisplay() {
 }
 
 function timer(seconds) {
-    
     counting = true;
-
+    
+    
     const now = Date.now();
     const then = now + seconds * 1000;
 
     countdown = setInterval(() => {
-        const secondsLeft = Math.round((then - Date.now()) / 1000);
+        secondsLeft = Math.round((then - Date.now()) / 1000);
         
+        setCounterColor(secondsLeft);
+      
         if (secondsLeft < 1) {
             clearInterval(countdown);
             toggleSession();
         }
-
-        timeLeft = secondsLeft;
         displayTimeLeft(secondsLeft);
     }, 1000);
+
+    
+}
+
+function setCounterColor(seconds) {
+    switch (true) {
+        case seconds <= 5:
+            counter.style.color = 'rgb(255, 40, 0)';
+            break;
+        case seconds <= 15:
+            counter.style.color = 'rgb(223, 239, 17)';
+            break;
+        default:
+            counter.style.color = 'rgb(35, 219, 63)';
+    }
 }
 
 function displayTimeLeft(seconds) {
@@ -80,41 +93,49 @@ function displayTimeLeft(seconds) {
 
 function toggleSession() {
     if (activeSession === 'session') {
-        timer(time.breakTime * 60);
+        timer((time.breakTime * 60) + 1);
         activeSession = 'break';
-        timerLabel.innerText = 'Break';
+        setTimeout(function() {
+            timerLabel.innerText = 'Break';
+        }, 1000)
+        
     } else {
-        timer(time.sessionTime * 60);
+        timer((time.sessionTime * 60) + 1);
         activeSession = 'session';
-        timerLabel.innerText = 'Session';
+        setTimeout(function() {
+            timerLabel.innerText = 'Session';
+        }, 1000)        
     }
 }
 
 function startTimer() {
     if (counting) {
-        timer(timeLeft);
+        timer(secondsLeft);
     } else {
         timer(time.sessionTime * 60);
         activeSession = 'session';
     }
 }
 
-function stopTimer() {
+function pauseTimer() {
     clearInterval(countdown);
-    counting = false;
-    activeSession = 'session';
+}
+
+function stopTimer() {
+    resetCounterValues();
     displayTimeLeft(time.sessionTime * 60);
 }
 
 function resetTimer() {
-    clearInterval(countdown);
-    counting = false;
-    activeSession = 'session';
+    resetCounterValues();
     init();
 }
 
-function pauseTimer() {
+function resetCounterValues() {
     clearInterval(countdown);
+    counting = false;
+    activeSession = 'session';
+    counter.style.color = 'rgb(255, 255, 255)';
 }
 
 timeButtons.forEach(button => button.addEventListener('click', updateTimeSetting));

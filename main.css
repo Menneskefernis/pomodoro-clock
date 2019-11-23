@@ -88,3 +88,24 @@ h3 {
 	margin: 30px auto;
 	padding: 10px;
 }
+
+.action-btn {
+	transition: all 0.3s
+}
+
+.fa-play:hover {
+	color:rgb(35, 219, 63);
+}
+
+.fa-sync-alt:hover {
+	transform: rotate(180deg);
+	color: rgb(0, 64, 255);
+}
+
+.fa-pause:hover {
+	color: rgb(223, 239, 17);
+}
+
+.fa-stop:hover {
+	color: rgb(255, 40, 0);
+}
