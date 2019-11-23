@@ -1,32 +1,50 @@
 const timeButtons = document.querySelectorAll('.time-btn');
-const counter = document.getElementById('counter');
+const timerLabel = document.getElementById('timer-label');
+const counter = document.getElementById('timer');
 const playButton = document.getElementById('play-btn');
 const stopButton = document.getElementById('stop-btn');
 const pauseButton = document.getElementById('pause-btn');
 const resetButton = document.getElementById('reset-btn');
+const sessionTime = document.getElementById('session-time');
+const breakTime = document.getElementById('break-time');
+
+const time = {
+    sessionTime: 25,
+    breakTime: 5
+}
 
 let countdown;
 let counting = false;
-let sessionTime = document.getElementById('session-time').dataset.time;
-let timeLeft = sessionTime * 60;
+let activeSession = 'session';
+let timeLeft = time.sessionTime * 60;
+
+function init() {
+    time.sessionTime = 25;
+    time.breakTime = 5;
+    updateTimeSettingsDisplay();
+}
 
 function updateTimeSetting() {
     if (counting) return;
     
-    const [incOrDec, session] = this.parentNode.id.split('-')
+    const [incOrDec, session] = this.parentNode.id.split('-');
     
-    const timeElement = document.getElementById(`${session}-time`);
-    const time = parseInt(timeElement.dataset.time);
-    
-    if (incOrDec == 'dec' && time == 1) return;
+    if (incOrDec == 'dec' && time[`${session}Time`] == 1) return;
 
-    sessionTime = (incOrDec == 'inc') ? time + 1 : time - 1;
-    
-    timeElement.dataset.time = sessionTime;
-    timeElement.innerText = sessionTime;
-    
-    if (session === 'session') {
-        displayTimeLeft(sessionTime * 60);
+    time[`${session}Time`] = (incOrDec == 'inc') ? time[`${session}Time`] + 1 : time[`${session}Time`] - 1;
+   
+    updateTimeSettingsDisplay();
+}
+
+function updateTimeSettingsDisplay() {
+    // const timeElement = document.getElementById(`${session}-time`);
+    // timeElement.innerText = time[`${session}Time`];
+
+    sessionTime.textContent = time.sessionTime;
+    breakTime.textContent = time.breakTime;
+
+    if (activeSession === 'session' && !counting) {
+        displayTimeLeft(time.sessionTime * 60);
     }
 }
 
@@ -40,10 +58,9 @@ function timer(seconds) {
     countdown = setInterval(() => {
         const secondsLeft = Math.round((then - Date.now()) / 1000);
         
-        if (secondsLeft < 0) {
+        if (secondsLeft < 1) {
             clearInterval(countdown);
-            counting = false;
-            return;
+            toggleSession();
         }
 
         timeLeft = secondsLeft;
@@ -61,18 +78,39 @@ function displayTimeLeft(seconds) {
     counter.innerText = display;
 }
 
+function toggleSession() {
+    if (activeSession === 'session') {
+        timer(time.breakTime * 60);
+        activeSession = 'break';
+        timerLabel.innerText = 'Break';
+    } else {
+        timer(time.sessionTime * 60);
+        activeSession = 'session';
+        timerLabel.innerText = 'Session';
+    }
+}
+
 function startTimer() {
     if (counting) {
         timer(timeLeft);
     } else {
-        timer(sessionTime * 60);
+        timer(time.sessionTime * 60);
+        activeSession = 'session';
     }
 }
 
 function stopTimer() {
     clearInterval(countdown);
     counting = false;
-    displayTimeLeft(sessionTime * 60);
+    activeSession = 'session';
+    displayTimeLeft(time.sessionTime * 60);
+}
+
+function resetTimer() {
+    clearInterval(countdown);
+    counting = false;
+    activeSession = 'session';
+    init();
 }
 
 function pauseTimer() {
@@ -82,5 +120,7 @@ function pauseTimer() {
 timeButtons.forEach(button => button.addEventListener('click', updateTimeSetting));
 playButton.addEventListener('click', startTimer);
 stopButton.addEventListener('click', stopTimer);
-resetButton.addEventListener('click', stopTimer);
+resetButton.addEventListener('click', resetTimer);
 pauseButton.addEventListener('click', pauseTimer);
+
+init();
